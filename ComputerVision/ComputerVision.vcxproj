@@ -108,6 +108,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,6 +122,11 @@
   <ItemGroup>
     <ClInclude Include="Experiment2.h" />
     <ClInclude Include="Function.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="animals.jpg" />
+    <Image Include="elephant.jpg" />
+    <Image Include="tree.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

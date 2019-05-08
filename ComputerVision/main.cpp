@@ -6,12 +6,13 @@
 #include <opencv2/imgproc.hpp>
 #include <vector>
 #include "Function.h"
+#include "Experiment2.h"
 
 
 using namespace cv;
 using namespace std;
 int main()
 {
-	Experiment1();
+	Experiment3();
 	return 0;
 }

@@ -14,7 +14,7 @@ using namespace std;
 
 int Experiment1() {
 	// read source img
-	Mat srcimg = imread("F:\\大三\\春季学期\\计算机视觉\\2019实验\\tree.jpg", IMREAD_COLOR);
+	Mat srcimg = imread("tree.jpg", IMREAD_COLOR);
 	if (!srcimg.data)
 	{
 		printf(" No image data \n ");
