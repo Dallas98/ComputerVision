@@ -49,7 +49,9 @@ void Experiment2() {
 	Mat image1 = imread("animals.jpg");
 	Mat image = imread("animals.jpg", 0);
 	Mat thresholded;
+	//threshold用来进行对图像（二维数组）的二值化阈值处理，thresholded为输出图像
 	threshold(image, thresholded, 60, 255, THRESH_BINARY_INV);
+	//imshow("", thresholded);
 	Mat res1;
 	dilate(thresholded, res1, Mat());
 	dilate(res1, res1, Mat());
