@@ -11,43 +11,6 @@ using namespace cv;
 using namespace std;
 
 
-
-int Experiment1() {
-	// read source img
-	Mat srcimg = imread("tree.jpg", IMREAD_COLOR);
-	if (!srcimg.data)
-	{
-		printf(" No image data \n ");
-		return -1;
-	}
-
-	// crop to a region covering the tree
-	Mat tree = srcimg;
-	tree = tree(Rect(525, 0, 300, tree.rows*0.64));
-
-	// split blue channel as a mask
-	vector<Mat> channels;
-	split(tree, channels);
-	Mat imageBlueChannel = channels.at(0);
-	Mat mask1, mask2;
-	threshold(imageBlueChannel, mask1, 223, 255, CV_THRESH_BINARY);
-	threshold(imageBlueChannel, mask2, 160, 255, CV_THRESH_BINARY);
-	mask1 = 255 - mask1; // inverse color
-	mask2 = 255 - mask2;
-
-	// adujst details
-	mask2(Rect(0, tree.rows - 14, tree.cols, 14)).copyTo(mask1(Rect(0, tree.rows - 14, tree.cols, 14)));
-	mask1(Rect(175, tree.rows - 10, tree.cols - 175, 10)) = 0;
-	mask1(Rect(0, tree.rows - 10, 145, 10)) = 0;
-
-	// use mask to split tree out
-	tree.copyTo(srcimg(Rect(100, 5, tree.cols, tree.rows)), mask1);
-	imshow("", srcimg);
-	waitKey(0);
-	return 0;
-}
-
-
 //Ω∑—Œ‘Î…˘
 void salt(Mat &image, int n) {
 	for (size_t k = 0; k < n; k++)

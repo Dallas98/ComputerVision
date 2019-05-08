@@ -18,13 +18,16 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Experiment.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Function.h">
-      <Filter>源文件</Filter>
+    <ClInclude Include="Experiment.h">
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Experiment2.h">
-      <Filter>源文件</Filter>
+    <ClInclude Include="Function.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

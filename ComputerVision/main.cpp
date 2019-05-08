@@ -1,18 +1,10 @@
-﻿#include <opencv2/opencv.hpp>
-#include <opencv2\imgproc\types_c.h>
-#include <iostream>  
-#include <opencv2/core/core.hpp>  
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <vector>
+﻿#include <iostream>  
 #include "Function.h"
-#include "Experiment2.h"
+#include "Experiment.h"
 
-
-using namespace cv;
 using namespace std;
 int main()
 {
-	Experiment3();
+	Experiment2();
 	return 0;
 }

@@ -117,10 +117,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Experiment.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Experiment2.h" />
+    <ClInclude Include="Experiment.h" />
     <ClInclude Include="Function.h" />
   </ItemGroup>
   <ItemGroup>
