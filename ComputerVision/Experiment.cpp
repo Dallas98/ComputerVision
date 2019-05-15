@@ -6,10 +6,23 @@
 #include <opencv2/imgproc.hpp>
 #include <vector>
 #include "Experiment.h"
+
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+#include <stdio.h>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <omp.h>
+
+using namespace std;
+using namespace cv;
 using namespace std;
 using namespace cv;
 
-void findlp(Mat image, int &x, int&y);
 void draw(vector<vector<Point>> contours, Mat image, Point *point);
 
 void Experiment1() {
@@ -25,18 +38,20 @@ void Experiment1() {
 	split(tree, channels);
 	Mat imageBlueChannel = channels.at(0);
 	Mat mask1, mask2;
+	//二值图像占有非常重要的地位，图像的二值化使图像中数据量大为减少，从而能凸显出目标的轮廓。
 	threshold(imageBlueChannel, mask1, 223, 255, CV_THRESH_BINARY);
 	threshold(imageBlueChannel, mask2, 160, 255, CV_THRESH_BINARY);
-	mask1 = 255 - mask1; // inverse color
-	mask2 = 255 - mask2;
 
-	// adujst details
-	mask2(Rect(0, tree.rows - 14, tree.cols, 14)).copyTo(mask1(Rect(0, tree.rows - 14, tree.cols, 14)));
-	mask1(Rect(175, tree.rows - 10, tree.cols - 175, 10)) = 0;
-	mask1(Rect(0, tree.rows - 10, 145, 10)) = 0;
+	mask1 = 255 - mask1; // inverse color
+	//mask2 = 255 - mask2;
+
+	//// adujst details
+	//mask2(Rect(0, tree.rows - 14, tree.cols, 14)).copyTo(mask1(Rect(0, tree.rows - 14, tree.cols, 14)));
+	//mask1(Rect(175, tree.rows - 10, tree.cols - 175, 10)) = 0;
+	//mask1(Rect(0, tree.rows - 10, 145, 10)) = 0;
 
 	// use mask to split tree out
-	tree.copyTo(srcimg(Rect(100, 5, tree.cols, tree.rows)), mask1);
+	tree.copyTo(srcimg(Rect(100, 100, tree.cols, tree.rows)), mask1);
 	imshow("", srcimg);
 	waitKey(0);
 }
@@ -51,21 +66,24 @@ void Experiment2() {
 	Mat thresholded;
 	//threshold用来进行对图像（二维数组）的二值化阈值处理，thresholded为输出图像
 	threshold(image, thresholded, 60, 255, THRESH_BINARY_INV);
-	//imshow("", thresholded);
+	imshow("", thresholded);
 	Mat res1;
+	//膨胀，输出到res1，该结构元素确定膨胀操作过程中的邻域的形状，各点像素值将被替换为对应邻域上的最大值
 	dilate(thresholded, res1, Mat());
 	dilate(res1, res1, Mat());
 	Mat res;
+	//腐蚀
 	erode(res1, res, Mat());
 
 	vector<vector<Point>> contours;
+	//寻找图像中物体的轮廓
 	findContours(res, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 	//Mat result(res.size(), CV_8U, Scalar(255));
-	int cmin = 100;
-	int cmax = 1000;
+	int min = 100;
+	int max = 1000;
 	vector<vector<Point>>::const_iterator itc = contours.begin();
 	while (itc != contours.end()) {
-		if (itc->size() < cmin || itc->size() > cmax)
+		if (itc->size() < min || itc->size() > max)
 			itc = contours.erase(itc);
 		else
 			++itc;
@@ -86,10 +104,9 @@ void Experiment2() {
 	{
 		circle(image1, point[i], 5, Scalar(255, 0, 0), -1);
 	}
-
+	cout <<"牛的数量："<<contours.size();
 	imshow("result", image1);
 	waitKey(0);
-	//imwrite("animalsres.bmp", image1);
 }
 
 void Experiment3()
@@ -101,14 +118,15 @@ void Experiment3()
 	Mat image2 = planes[0];
 	Mat thresholded;
 	threshold(image2, thresholded, 190, 255, THRESH_BINARY_INV);
+	//imshow("", thresholded);
 	Mat res = thresholded;
 	vector<vector<Point>> contours;
 	findContours(res, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-	int cmin = 500;
-	int cmax = 10000;
+	int min = 500;
+	int max = 10000;
 	vector<vector<Point>>::const_iterator itc = contours.begin();
 	while (itc != contours.end()) {
-		if (itc->size() < cmin || itc->size() > cmax)
+		if (itc->size() < min || itc->size() > max)
 			itc = contours.erase(itc);
 		else
 			++itc;
@@ -142,31 +160,6 @@ void Experiment3()
 }
 
 
-void findlp(Mat image, int &x, int&y)
-{
-	vector<Mat> planes;
-	split(image, planes);
-	Mat image2 = planes[0];
-	for (int i = 0; i < image2.rows; i++) {
-		for (int j = 0; j < image2.cols; j++) {
-			if (image2.at<uchar>(i, j) < 80) {
-				x = i;
-				i = image2.rows;
-				break;
-			}
-		}
-	}
-	for (int i = 0; i < image2.rows; i++) {
-		for (int j = 0; j < 100; j++) {
-			if (image2.at<uchar>(i, j) < 80) {
-				y = j;
-				i = image2.rows;
-				break;
-			}
-		}
-	}
-}
-
 void draw(vector<vector<Point>> contours, Mat image, Point *point)
 {
 	//生成与原图大小相同的空白图片
@@ -181,7 +174,6 @@ void draw(vector<vector<Point>> contours, Mat image, Point *point)
 	//实际大象块顺序：2，8，6，5，1，4，7，3
 	int order[8] = { 0, 2, 4, 5, 3, 7, 6, 1 };
 	int start[8] = { 88, 148, 213, 294, 394, 474, 540, 636 };
-#pragma omp parallel for schedule(dynamic) num_threads(88)
 	for (int i = 7; i >= 0; i--)
 	{
 		int num = order[i];//第几个块
@@ -203,3 +195,4 @@ void draw(vector<vector<Point>> contours, Mat image, Point *point)
 	imshow("mask", mask);
 	waitKey(-1);
 }
+
